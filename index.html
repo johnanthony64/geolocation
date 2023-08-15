@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation</title>
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=loadMap' async defer></script>
+    <style>
+      
+      body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mapContainer {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    margin-top: 20px;
+}
+
+#mapCanvas,
+#bingMap {
+    border: 2px solid black;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+button {
+    color: black;
+    cursor: pointer;
+    margin-top: 20px;
+}
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Location Using Bing Maps</h1>
+</header>
+<p>Get your current location.</p>
+<div id="mapContainer">
+    <canvas id="mapCanvas"></canvas>
+    <div id="bingMap"></div>
+</div> <br>
+<button onclick="getLocation()">Get My Location</button>
+
+<script>
+    let canvas = document.getElementById('mapCanvas');
+    let ctx = canvas.getContext('2d');
+    let map;
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(locateSuccess, locateFail);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function loadMap() {
+        map = new Microsoft.Maps.Map(document.getElementById('bingMap'), {
+            credentials: 'AplMEgkkrTidBCsBhP2URu-Q0gS44WXV8HbQOvhXglvBsgoaQWn0lMrh0Vs8DT0i'
+        });
+    }
+
+    function locateSuccess(position) {
+    let location = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
+    map.setView({ center: location, zoom: 17 });
+
+    // Place a red dot on the Bing Map.
+    let pushpin = new Microsoft.Maps.Pushpin(location, {
+        color: 'red',
+        radius: 10
+    });
+    map.entities.push(pushpin);
+}
+
+    function locateFail(error) {
+        alert("Error: " + error.message);
+    }
+
+    window.onload = loadMap;
+</script>
+</body>
+</html>
